@@ -1,0 +1,83 @@
+body {
+  font-family: "Righteous", cursive;
+  font-family: "Roboto", sans-serif;
+  height: 667px;
+  width: 375px;
+  background-color: #f3f3f3;
+}
+
+.barra-topo {
+  height: 80px;
+  width: 100%;
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0, 05);
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+.barra-topo ion-icon {
+  height: 45px;
+  width: 42px;
+  margin-right: 15px;
+}
+.barra-topo img {
+  height: 53px;
+  width: 75px;
+  margin-left: 15px;
+}
+.chat-uol {
+  width: 100%;
+  height: 100%;
+  background-color: #e5e5e5;
+}
+.mensagem {
+  height: auto;
+  width: 375px;
+  border-radius: 2px;
+  background-color: #ffffff;
+  font-family: Roboto;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+}
+.mensagem span {
+  font-weight: 700;
+}
+.status {
+  background-color: #aaaaaa;
+}
+.private {
+  background-color: #ffdede;
+}
+
+.caixa-mensagem {
+  height: 80px;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+}
+
+.caixa-mensagem span {
+  font-family: Roboto;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 1);
+  margin-left: 15px;
+}
+
+.caixa-mensagem ion-icon {
+  height: 26px;
+  width: 26px;
+  margin-right: 25px;
+}
