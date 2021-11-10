@@ -79,8 +79,15 @@ body {
   margin-left: 15px;
 }
 
-.caixa-mensagem ion-icon {
+button ion-icon {
   height: 26px;
   width: 26px;
   margin-right: 25px;
+}
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border: 0px;
 }
