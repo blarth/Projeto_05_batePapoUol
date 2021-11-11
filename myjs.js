@@ -34,14 +34,21 @@ function tudoCertoNoCadastro(response) {
 
 cadastrarUsuario();
 //funcao para verficiar o sevidor
-requisicaoPostStatus = axios.post(
-  "https://mock-api.driven.com.br/api/v4/uol/status",
-  usuario
-);
 
 function enviarVerificacao() {
-  requisicaoPostStatus;
+  requisicaoPostStatus = axios.post(
+    "https://mock-api.driven.com.br/api/v4/uol/status",
+    usuario
+  );
+  requisicaoPostStatus.then(VerificacaoSucedida);
+  requisicaoPostStatus.catch(VerificacaoMalSucedida);
+}
+function VerificacaoMalSucedida(erro) {
+  window.location.reload();
+}
+function VerificacaoSucedida(resposta) {
   console.log("a verificacao ta rolando");
+  console.log(resposta.status);
 }
 //funcao responsavel por trazer as msgs na tela
 function trazerMsgsTela(resposta) {
@@ -84,6 +91,9 @@ function trazerMsgsTela(resposta) {
 }
 //funcao para o timeInterval
 function refreshMsgs() {
+  requisicaoGetMsg = axios(
+    "https://mock-api.driven.com.br/api/v4/uol/messages"
+  );
   requisicaoGetMsg.then(trazerMsgsTela);
 }
 
@@ -116,14 +126,14 @@ function criaMsgReservada(usuariox, time, destinatario, mensagemx) {
 requisicaoGetMsg.then(trazerMsgsTela);
 //Funcoes que vao rodar em paralelo alimentando o servidor
 function ativarIntervalVerificacao(response) {
-  setInterval(enviarVerificacao, 5000);
+  setInterval(enviarVerificacao, 4990);
 }
 
 setInterval(refreshMsgs, 3000);
 //parte para enviar msg para o servidor
 function enviaMsgTodos(botao) {
-  let intermedario = botao.previousSibling;
-  let mensagem = intermedario.previousSibling.value;
+  const mensagem = document.querySelector("input").value;
+  console.log(mensagem);
 
   objetoMensagem = {
     from: usuario.name,
@@ -146,8 +156,13 @@ function espacoBranco(botao) {
 function printTaCerto(resposta) {
   console.log(resposta);
   console.log("a msg foi!");
+  requisicaoGetMsg = axios(
+    "https://mock-api.driven.com.br/api/v4/uol/messages"
+  );
+  requisicaoGetMsg.then(trazerMsgsTela);
 }
 
 function printDoErro(error) {
-  console.dir(error.response.status);
+  console.dir(error.response);
+  window.location.reload();
 }
