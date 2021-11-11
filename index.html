@@ -24,8 +24,13 @@
     </header>
     <main class="chat-uol"></main>
     <section class="caixa-mensagem">
-      <span> Escreva aqui... </span>
-      <button onclick="criaMsgTodos()" data-identifier="send-message">
+      <input
+        type="text"
+        name="mensagem"
+        value="Escreva Aqui..."
+        onclick="espacoBranco(this)"
+      />
+      <button onclick="enviaMsgTodos(this)" data-identifier="send-message">
         <ion-icon name="paper-plane-outline"></ion-icon>
       </button>
     </section>

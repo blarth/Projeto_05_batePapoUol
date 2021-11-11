@@ -2,16 +2,51 @@ let now = new Date();
 let hora = now.getHours();
 let minutos = now.getMinutes();
 let segundos = now.getSeconds();
-requisicaoGet = axios("https://mock-api.driven.com.br/api/v4/uol/messages");
+let requisicaoGetMsg = axios(
+  "https://mock-api.driven.com.br/api/v4/uol/messages"
+);
+let requisicaoPostMsg;
+let requisicaoPostUsuario;
 const mensagemPadraoData = `${hora}:${minutos}:${segundos}`;
-
-let usuario = { name: prompt("Qual o seu lindo nome ?") };
-
 const localChat = document.querySelector(".chat-uol");
+let usuario;
+let requisicaoPostStatus;
 
+//funcao para cadastrar o usuario no servidor quando ele entra no site
+function cadastrarUsuario() {
+  usuario = {
+    name: prompt("Qual o seu lindo nome ?"),
+  };
+
+  requisicaoPostUsuario = axios.post(
+    "https://mock-api.driven.com.br/api/v4/uol/participants",
+    usuario
+  );
+
+  requisicaoPostUsuario.catch(cadastrarUsuario);
+  requisicaoPostUsuario.then(tudoCertoNoCadastro);
+}
+
+function tudoCertoNoCadastro(response) {
+  console.log(response.status);
+  ativarIntervalVerificacao();
+}
+
+cadastrarUsuario();
+//funcao para verficiar o sevidor
+requisicaoPostStatus = axios.post(
+  "https://mock-api.driven.com.br/api/v4/uol/status",
+  usuario
+);
+
+function enviarVerificacao() {
+  requisicaoPostStatus;
+  console.log("a verificacao ta rolando");
+}
+//funcao responsavel por trazer as msgs na tela
 function trazerMsgsTela(resposta) {
   const respostaData = resposta.data;
-  console.log(respostaData);
+
   for (let i = 0; i < respostaData.length; i++) {
     switch (respostaData[i].type) {
       case "status":
@@ -47,9 +82,9 @@ function trazerMsgsTela(resposta) {
   const ultimaMsg = document.querySelectorAll(".mensagem");
   ultimaMsg[ultimaMsg.length - 1].scrollIntoView();
 }
-
+//funcao para o timeInterval
 function refreshMsgs() {
-  requisicaoGet.then(trazerMsgsTela);
+  requisicaoGetMsg.then(trazerMsgsTela);
 }
 
 function criaMsgEntrada(usuariox, time) {
@@ -65,19 +100,54 @@ function criaMsgSaida(usuariox, time) {
 (${time})\u00A0<span>${usuariox}</span>\u00A0sai da sala... 
   </div>`);
 }
-/* criaMsgEntrada();
-criaMsgSaida(); */
-/* criaMsgEntrada(); */
+
 function criaMsgTodos(usuariox, time, destinatario, mensagemx) {
   return (localChat.innerHTML += `<div class="mensagem" data-identifier="message">
-  (${time})\u00A0<span>${usuariox}</span>\u00A0 para \u00A0<span>${destinatario}</span>\u00A0 ${mensagemx} 
+  (${time})\u00A0<span>${usuariox}</span>\u00A0 para \u00A0<span>${destinatario}</span>\u00A0: ${mensagemx} 
   </div>`);
 }
 
 function criaMsgReservada(usuariox, time, destinatario, mensagemx) {
   return (localChat.innerHTML += `<div class="mensagem private" data-identifier="message">
-  (${time})\u00A0<span>${usuariox}</span>\u00A0 para \u00A0<span>${destinatario}</span>\u00A0 ${mensagemx} 
+  (${time})\u00A0<span>${usuariox}</span>\u00A0 para \u00A0<span>${destinatario}</span>\u00A0: ${mensagemx} 
   </div>`);
 }
-requisicaoGet.then(trazerMsgsTela);
+//Primeira requisicao quando entra na pagina
+requisicaoGetMsg.then(trazerMsgsTela);
+//Funcoes que vao rodar em paralelo alimentando o servidor
+function ativarIntervalVerificacao(response) {
+  setInterval(enviarVerificacao, 5000);
+}
+
 setInterval(refreshMsgs, 3000);
+//parte para enviar msg para o servidor
+function enviaMsgTodos(botao) {
+  let intermedario = botao.previousSibling;
+  let mensagem = intermedario.previousSibling.value;
+
+  objetoMensagem = {
+    from: usuario.name,
+    to: "Todos",
+    text: mensagem,
+    type: "message",
+  };
+  requisicaoPostMsg = axios.post(
+    "https://mock-api.driven.com.br/api/v4/uol/messages",
+    objetoMensagem
+  );
+  requisicaoPostMsg.then(printTaCerto);
+  requisicaoPostMsg.catch(printDoErro);
+}
+//funcao para deixar o input vazio quando clicado
+function espacoBranco(botao) {
+  botao.value = "";
+}
+//funcao para lidar com o envio da msg
+function printTaCerto(resposta) {
+  console.log(resposta);
+  console.log("a msg foi!");
+}
+
+function printDoErro(error) {
+  console.dir(error.response.status);
+}
