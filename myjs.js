@@ -7,13 +7,13 @@ let requisicaoGetMsg = axios(
 );
 let requisicaoPostMsg;
 let requisicaoPostUsuario;
-const mensagemPadraoData = `${hora}:${minutos}:${segundos}`;
+/* const mensagemPadraoData = `${hora}:${minutos}:${segundos}`; */
 const localChat = document.querySelector(".chat-uol");
 let usuario;
 let requisicaoPostStatus;
 
 //funcao para cadastrar o usuario no servidor quando ele entra no site
-function cadastrarUsuario() {
+/* function cadastrarUsuario() {
   usuario = {
     name: prompt("Qual o seu lindo nome ?"),
   };
@@ -26,13 +26,34 @@ function cadastrarUsuario() {
   requisicaoPostUsuario.catch(cadastrarUsuario);
   requisicaoPostUsuario.then(tudoCertoNoCadastro);
 }
-
-function tudoCertoNoCadastro(response) {
+ */
+/* function tudoCertoNoCadastro(response) {
   console.log(response.status);
   ativarIntervalVerificacao();
 }
+ */
+let cadastrarUsuario = async () => {
+  usuario = {
+    name: prompt("Qual o seu lindo nome ?"),
+  };
 
-cadastrarUsuario();
+  requisicaoPostUsuario = axios.post(
+    "https://mock-api.driven.com.br/api/v4/uol/participants",
+    usuario
+  );
+
+  requisicaoPostUsuario.catch(x);
+  requisicaoPostUsuario.then((response) => {
+    console.log(response.status);
+    ativarIntervalVerificacao();
+  });
+};
+
+/* function tudoCertoNoCadastro(response) {
+  console.log(response.status);
+  ativarIntervalVerificacao();
+}
+; */
 //funcao para verficiar o sevidor
 
 function enviarVerificacao() {
@@ -40,20 +61,25 @@ function enviarVerificacao() {
     "https://mock-api.driven.com.br/api/v4/uol/status",
     usuario
   );
-  requisicaoPostStatus.then(VerificacaoSucedida);
-  requisicaoPostStatus.catch(VerificacaoMalSucedida);
+  requisicaoPostStatus.then((resposta) => {
+    console.log("a verificacao ta rolando");
+    console.log(resposta.status);
+  });
+  requisicaoPostStatus.catch((erro) => {
+    window.location.reload();
+  });
 }
-function VerificacaoMalSucedida(erro) {
+/* function VerificacaoMalSucedida(erro) {
   window.location.reload();
-}
-function VerificacaoSucedida(resposta) {
+} */
+/* function VerificacaoSucedida(resposta) {
   console.log("a verificacao ta rolando");
   console.log(resposta.status);
-}
+} */
 //funcao responsavel por trazer as msgs na tela
 function trazerMsgsTela(resposta) {
   const respostaData = resposta.data;
-
+  localChat.innerHTML = "";
   for (let i = 0; i < respostaData.length; i++) {
     switch (respostaData[i].type) {
       case "status":
@@ -129,7 +155,13 @@ function ativarIntervalVerificacao(response) {
   setInterval(enviarVerificacao, 4990);
 }
 
-setInterval(refreshMsgs, 3000);
+setInterval((resposta) => {
+  requisicaoGetMsg = axios(
+    "https://mock-api.driven.com.br/api/v4/uol/messages"
+  );
+  console.log(" setInterval ta correto");
+  requisicaoGetMsg.then(trazerMsgsTela);
+}, 3000);
 //parte para enviar msg para o servidor
 function enviaMsgTodos(botao) {
   const mensagem = document.querySelector("input").value;
@@ -145,24 +177,36 @@ function enviaMsgTodos(botao) {
     "https://mock-api.driven.com.br/api/v4/uol/messages",
     objetoMensagem
   );
-  requisicaoPostMsg.then(printTaCerto);
-  requisicaoPostMsg.catch(printDoErro);
+  requisicaoPostMsg.then((resposta) => {
+    console.log(resposta);
+    console.log("a msg foi!");
+    requisicaoGetMsg = axios(
+      "https://mock-api.driven.com.br/api/v4/uol/messages"
+    );
+
+    requisicaoGetMsg.then(trazerMsgsTela);
+  });
+  requisicaoPostMsg.catch((error) => {
+    console.dir(error.response);
+    window.location.reload();
+  });
 }
 //funcao para deixar o input vazio quando clicado
 function espacoBranco(botao) {
   botao.value = "";
 }
 //funcao para lidar com o envio da msg
-function printTaCerto(resposta) {
+/*  function printTaCerto(resposta) {
   console.log(resposta);
   console.log("a msg foi!");
   requisicaoGetMsg = axios(
     "https://mock-api.driven.com.br/api/v4/uol/messages"
   );
   requisicaoGetMsg.then(trazerMsgsTela);
-}
+} 
 
-function printDoErro(error) {
+ function printDoErro(error) {
   console.dir(error.response);
   window.location.reload();
 }
+*/
