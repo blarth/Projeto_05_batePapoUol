@@ -1,16 +1,16 @@
 let now = new Date();
-let hora = now.getHours();
+/* let hora = now.getHours();
 let minutos = now.getMinutes();
-let segundos = now.getSeconds();
+let segundos = now.getSeconds(); */
 let requisicaoGetMsg = axios(
   "https://mock-api.driven.com.br/api/v4/uol/messages"
 );
 let requisicaoPostMsg;
 let requisicaoPostUsuario;
+let requisicaoPostStatus;
 /* const mensagemPadraoData = `${hora}:${minutos}:${segundos}`; */
 const localChat = document.querySelector(".chat-uol");
 let usuario;
-let requisicaoPostStatus;
 
 //funcao para cadastrar o usuario no servidor quando ele entra no site
 /* function cadastrarUsuario() {
@@ -32,22 +32,24 @@ let requisicaoPostStatus;
   ativarIntervalVerificacao();
 }
  */
-let cadastrarUsuario = async () => {
+let cadastrarUsuario = () => {
   usuario = {
     name: prompt("Qual o seu lindo nome ?"),
   };
 
+  console.log(usuario.name);
   requisicaoPostUsuario = axios.post(
     "https://mock-api.driven.com.br/api/v4/uol/participants",
     usuario
   );
 
-  requisicaoPostUsuario.catch(x);
+  requisicaoPostUsuario.catch(cadastrarUsuario);
   requisicaoPostUsuario.then((response) => {
     console.log(response.status);
     ativarIntervalVerificacao();
   });
 };
+cadastrarUsuario();
 
 /* function tudoCertoNoCadastro(response) {
   console.log(response.status);
@@ -125,34 +127,35 @@ function refreshMsgs() {
 
 function criaMsgEntrada(usuariox, time) {
   return (localChat.innerHTML += `<div class="mensagem status" data-identifier="message">
-        (${time}) 
-        \u00A0<span>${usuariox}</span>\u00A0 
+        <span class="horario"> (${time})</span> <span class="usuario">${usuariox}</span>  
         entrou na sala...
         </div>`);
 }
 
 function criaMsgSaida(usuariox, time) {
   return (localChat.innerHTML += `<div class="mensagem status" data-identifier="message">
-(${time})\u00A0<span>${usuariox}</span>\u00A0sai da sala... 
+<span class="horario"> (${time}) </span><span class="usuario"> ${usuariox} </span>sai da sala... 
   </div>`);
 }
 
 function criaMsgTodos(usuariox, time, destinatario, mensagemx) {
   return (localChat.innerHTML += `<div class="mensagem" data-identifier="message">
-  (${time})\u00A0<span>${usuariox}</span>\u00A0 para \u00A0<span>${destinatario}</span>\u00A0: ${mensagemx} 
+  <span class="horario"> (${time}) </span>
+  <span class="usuario"> ${usuariox} </span>
+  para <span> ${destinatario} </span>: ${mensagemx} 
   </div>`);
 }
 
 function criaMsgReservada(usuariox, time, destinatario, mensagemx) {
   return (localChat.innerHTML += `<div class="mensagem private" data-identifier="message">
-  (${time})\u00A0<span>${usuariox}</span>\u00A0 para \u00A0<span>${destinatario}</span>\u00A0: ${mensagemx} 
+  <span class="horario"> (${time}) </span><span class="usuario"> ${usuariox} </span> para <span> ${destinatario} </span>: ${mensagemx} 
   </div>`);
 }
 //Primeira requisicao quando entra na pagina
 requisicaoGetMsg.then(trazerMsgsTela);
 //Funcoes que vao rodar em paralelo alimentando o servidor
 function ativarIntervalVerificacao(response) {
-  setInterval(enviarVerificacao, 4990);
+  setInterval(enviarVerificacao, 4999);
 }
 
 setInterval((resposta) => {
@@ -187,7 +190,6 @@ function enviaMsgTodos(botao) {
     requisicaoGetMsg.then(trazerMsgsTela);
   });
   requisicaoPostMsg.catch((error) => {
-    console.dir(error.response);
     window.location.reload();
   });
 }
