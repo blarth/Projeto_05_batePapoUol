@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Righteous", cursive;
   font-family: "Roboto", sans-serif;
@@ -34,32 +38,52 @@ body {
 }
 
 .mensagem {
-  height: auto;
   width: 100%;
   border-radius: 2px;
   background-color: #ffffff;
   font-family: Roboto;
   font-size: 14px;
-  display: flex;
-  align-items: center;
+  /* display: flex;
+  align-items: center; */
   font-weight: 400;
   margin-bottom: 4px;
   min-height: 40px;
-
-  /* overflow-wrap: break-word; */
   word-break: break-all;
+  padding-top: 15px;
+  padding-left: 6px;
 }
+
 .mensagem:last-child {
   margin-bottom: 85px;
 }
 .usuario {
   font-weight: 700;
   margin-right: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+  min-width: auto;
 }
 .horario {
   margin-left: 6px;
   margin-right: 6px;
   color: #aaaaaa;
+  min-width: 16%;
+}
+.destinatario {
+  font-weight: 700;
+  margin-left: 6px;
+  hyphens: manual;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  max-width: 10%;
+}
+.texto {
+  margin-left: 6px;
+  inline-size: max-content;
+  overflow-wrap: break-word;
+  hyphens: manual;
+  margin-right: 6px;
 }
 .status {
   background-color: #dcdcdc;
@@ -78,7 +102,6 @@ body {
   align-items: center;
   position: fixed;
   bottom: 0px;
-  left: 0px;
 }
 
 .caixa-mensagem input {
@@ -88,7 +111,9 @@ body {
   font-weight: 400;
   color: rgba(0, 0, 0, 1);
   margin-left: 15px;
+  border-color: #ffffff;
   border: 0px;
+  outline: none;
 }
 
 button ion-icon {

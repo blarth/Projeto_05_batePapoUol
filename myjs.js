@@ -1,7 +1,3 @@
-let now = new Date();
-/* let hora = now.getHours();
-let minutos = now.getMinutes();
-let segundos = now.getSeconds(); */
 let requisicaoGetMsg = axios(
   "https://mock-api.driven.com.br/api/v4/uol/messages"
 );
@@ -10,34 +6,16 @@ let requisicaoPostUsuario;
 let requisicaoPostStatus;
 /* const mensagemPadraoData = `${hora}:${minutos}:${segundos}`; */
 const localChat = document.querySelector(".chat-uol");
+let input = document.querySelector("input");
 let usuario;
 
 //funcao para cadastrar o usuario no servidor quando ele entra no site
-/* function cadastrarUsuario() {
-  usuario = {
-    name: prompt("Qual o seu lindo nome ?"),
-  };
 
-  requisicaoPostUsuario = axios.post(
-    "https://mock-api.driven.com.br/api/v4/uol/participants",
-    usuario
-  );
-
-  requisicaoPostUsuario.catch(cadastrarUsuario);
-  requisicaoPostUsuario.then(tudoCertoNoCadastro);
-}
- */
-/* function tudoCertoNoCadastro(response) {
-  console.log(response.status);
-  ativarIntervalVerificacao();
-}
- */
 let cadastrarUsuario = () => {
   usuario = {
     name: prompt("Qual o seu lindo nome ?"),
   };
 
-  console.log(usuario.name);
   requisicaoPostUsuario = axios.post(
     "https://mock-api.driven.com.br/api/v4/uol/participants",
     usuario
@@ -45,39 +23,22 @@ let cadastrarUsuario = () => {
 
   requisicaoPostUsuario.catch(cadastrarUsuario);
   requisicaoPostUsuario.then((response) => {
-    console.log(response.status);
     ativarIntervalVerificacao();
   });
 };
 cadastrarUsuario();
-
-/* function tudoCertoNoCadastro(response) {
-  console.log(response.status);
-  ativarIntervalVerificacao();
-}
-; */
-//funcao para verficiar o sevidor
 
 function enviarVerificacao() {
   requisicaoPostStatus = axios.post(
     "https://mock-api.driven.com.br/api/v4/uol/status",
     usuario
   );
-  requisicaoPostStatus.then((resposta) => {
-    console.log("a verificacao ta rolando");
-    console.log(resposta.status);
-  });
+  requisicaoPostStatus.then((resposta) => {});
   requisicaoPostStatus.catch((erro) => {
     window.location.reload();
   });
 }
-/* function VerificacaoMalSucedida(erro) {
-  window.location.reload();
-} */
-/* function VerificacaoSucedida(resposta) {
-  console.log("a verificacao ta rolando");
-  console.log(resposta.status);
-} */
+
 //funcao responsavel por trazer as msgs na tela
 function trazerMsgsTela(resposta) {
   const respostaData = resposta.data;
@@ -112,17 +73,11 @@ function trazerMsgsTela(resposta) {
         break;
       default:
         console.log(respostaData[i].type);
+        break;
     }
   }
   const ultimaMsg = document.querySelectorAll(".mensagem");
   ultimaMsg[ultimaMsg.length - 1].scrollIntoView();
-}
-//funcao para o timeInterval
-function refreshMsgs() {
-  requisicaoGetMsg = axios(
-    "https://mock-api.driven.com.br/api/v4/uol/messages"
-  );
-  requisicaoGetMsg.then(trazerMsgsTela);
 }
 
 function criaMsgEntrada(usuariox, time) {
@@ -139,17 +94,18 @@ function criaMsgSaida(usuariox, time) {
 }
 
 function criaMsgTodos(usuariox, time, destinatario, mensagemx) {
-  return (localChat.innerHTML += `<div class="mensagem" data-identifier="message">
+  return (localChat.innerHTML += `<p class="mensagem" data-identifier="message">
   <span class="horario"> (${time}) </span>
   <span class="usuario"> ${usuariox} </span>
-  para <span> ${destinatario} </span>: ${mensagemx} 
-  </div>`);
+  para <span class="destinatario"> ${destinatario} </span>: 
+  <span class="texto">${mensagemx}</span> 
+  </p>`);
 }
 
 function criaMsgReservada(usuariox, time, destinatario, mensagemx) {
-  return (localChat.innerHTML += `<div class="mensagem private" data-identifier="message">
-  <span class="horario"> (${time}) </span><span class="usuario"> ${usuariox} </span> para <span> ${destinatario} </span>: ${mensagemx} 
-  </div>`);
+  return (localChat.innerHTML += `<p class="mensagem private" data-identifier="message">
+  <span class="horario"> (${time}) </span><span class="usuario"> ${usuariox} </span> para <span> ${destinatario} </span>: <span class="texto">${mensagemx}</span> 
+  </p>`);
 }
 //Primeira requisicao quando entra na pagina
 requisicaoGetMsg.then(trazerMsgsTela);
@@ -158,17 +114,19 @@ function ativarIntervalVerificacao(response) {
   setInterval(enviarVerificacao, 4999);
 }
 
-setInterval((resposta) => {
+setInterval(() => {
   requisicaoGetMsg = axios(
     "https://mock-api.driven.com.br/api/v4/uol/messages"
   );
-  console.log(" setInterval ta correto");
   requisicaoGetMsg.then(trazerMsgsTela);
 }, 3000);
 //parte para enviar msg para o servidor
 function enviaMsgTodos(botao) {
   const mensagem = document.querySelector("input").value;
-  console.log(mensagem);
+  if (mensagem === "") {
+    alert("Você não pode mandar uma mensagem vazia");
+    mensagem.value.innerHTML = "Escreva Aqui...";
+  }
 
   objetoMensagem = {
     from: usuario.name,
@@ -181,8 +139,6 @@ function enviaMsgTodos(botao) {
     objetoMensagem
   );
   requisicaoPostMsg.then((resposta) => {
-    console.log(resposta);
-    console.log("a msg foi!");
     requisicaoGetMsg = axios(
       "https://mock-api.driven.com.br/api/v4/uol/messages"
     );
@@ -192,23 +148,12 @@ function enviaMsgTodos(botao) {
   requisicaoPostMsg.catch((error) => {
     window.location.reload();
   });
+  let mudaInput = () => {
+    mensagem.value.innerHTML = "Escreva Aqui...";
+  };
+  mudaInput();
 }
 //funcao para deixar o input vazio quando clicado
 function espacoBranco(botao) {
   botao.value = "";
 }
-//funcao para lidar com o envio da msg
-/*  function printTaCerto(resposta) {
-  console.log(resposta);
-  console.log("a msg foi!");
-  requisicaoGetMsg = axios(
-    "https://mock-api.driven.com.br/api/v4/uol/messages"
-  );
-  requisicaoGetMsg.then(trazerMsgsTela);
-} 
-
- function printDoErro(error) {
-  console.dir(error.response);
-  window.location.reload();
-}
-*/
